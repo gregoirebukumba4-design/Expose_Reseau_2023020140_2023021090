@@ -31,18 +31,26 @@ réel.
 
 ## Carte Android
 
-`expo-maps` affiche Google Maps sur Android. Créez une clé Google Maps SDK
-for Android, restreignez-la au package `com.exposereseau.maintenance`, puis
-fournissez-la à la configuration Expo :
+`expo-maps` utilise Google Maps sur Android. La création de la clé nécessite
+un projet Google Cloud dont vous avez l'accès, l'activation de **Maps SDK for
+Android** et un compte de facturation associé. Créez une clé dans la page
+[Google Maps Platform > Keys & Credentials](https://console.cloud.google.com/google/maps-apis/credentials),
+restreignez ses API à **Maps SDK for Android** et ses applications Android au
+package `com.exposereseau.maintenance` avec l'empreinte SHA-1 de signature
+EAS.
 
-```powershell
-$env:GOOGLE_MAPS_API_KEY = "votre-cle"
-npx expo start
-```
+Ajoutez ensuite `GOOGLE_MAPS_API_KEY` comme variable **sensitive** de
+l'environnement `preview` dans **Expo dashboard > Project settings >
+Environment variables** pour le projet `Expose_Reseau_2023020140_2023021090`.
+Utilisez la visibilité `sensitive` (et non `secret`) : EAS CLI doit pouvoir
+lire cette valeur lors de la résolution de la configuration native.
+Ne mettez pas la clé dans Git, dans un fichier de configuration commité, ni
+dans un message.
 
-La clé est injectée uniquement par `app.config.ts` et ne doit pas être
-commise dans le dépôt. La carte nécessite une application native (un build
-EAS); iOS utilise Apple Maps.
+Le profil `preview` consomme explicitement l'environnement EAS `preview`;
+relancez ensuite `npx eas-cli@latest build --platform android --profile
+preview`. La clé native est incorporée au binaire : les restrictions Google
+par package et certificat sont importantes. iOS utilise Apple Maps.
 
 ## APK Android avec EAS
 
